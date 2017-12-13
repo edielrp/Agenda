@@ -20,6 +20,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -137,10 +137,27 @@ public class MainActivity extends AppCompatActivity {
 
         searchView.setIconifiedByDefault(true);
 
-
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.favoritos:
+                mostrarSomenteFavoritos();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void mostrarSomenteFavoritos() {
+        contatos.clear();
+        contatos.addAll(cDAO.buscaTodosContatosFavoritos());
+        recyclerView.getAdapter().notifyDataSetChanged();
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -216,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     contato.setFavorito(Boolean.TRUE);
                 }
                 cDAO.salvaContato(contato);
-                recyclerView.getAdapter().notifyDataSetChanged();
+                updateUI(null);
             }
         });
 

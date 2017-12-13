@@ -13,6 +13,8 @@ import br.edu.ifspsaocarlos.agenda.model.Contato;
 
 
 public class ContatoDAO {
+    private static final String[] PROJECTION = new String[]{SQLiteHelper.KEY_ID, SQLiteHelper.KEY_NAME, SQLiteHelper.KEY_FONE, SQLiteHelper.KEY_EMAIL, SQLiteHelper.KEY_FAVORITO, SQLiteHelper.KEY_FONE_2};
+
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
 
@@ -26,10 +28,8 @@ public class ContatoDAO {
 
         Cursor cursor;
 
-        String[] cols = new String[]{SQLiteHelper.KEY_ID, SQLiteHelper.KEY_NAME, SQLiteHelper.KEY_FONE, SQLiteHelper.KEY_EMAIL, SQLiteHelper.KEY_FAVORITO};
-
-        cursor = database.query(SQLiteHelper.DATABASE_TABLE, cols, null, null,
-                null, null, SQLiteHelper.KEY_FAVORITO + " DESC," + SQLiteHelper.KEY_NAME);
+        cursor = database.query(SQLiteHelper.DATABASE_TABLE, PROJECTION, null, null,
+                null, null, SQLiteHelper.KEY_NAME);
 
         while (cursor.moveToNext()) {
             Contato contato = new Contato();
@@ -38,6 +38,7 @@ public class ContatoDAO {
             contato.setFone(cursor.getString(2));
             contato.setEmail(cursor.getString(3));
             contato.setFavorito(new Boolean(cursor.getInt(4) == 0 ? Boolean.FALSE : Boolean.TRUE));
+            contato.setFone2(cursor.getString(5));
             contatos.add(contato);
 
 
@@ -49,18 +50,46 @@ public class ContatoDAO {
         return contatos;
     }
 
+    public List<Contato> buscaTodosContatosFavoritos() {
+        database = dbHelper.getReadableDatabase();
+        List<Contato> contatos = new ArrayList<>();
+
+        Cursor cursor;
+
+        cursor = database.query(SQLiteHelper.DATABASE_TABLE, PROJECTION, SQLiteHelper.KEY_FAVORITO + " = 1", null,
+                null, null, SQLiteHelper.KEY_NAME);
+
+        while (cursor.moveToNext()) {
+            Contato contato = new Contato();
+            contato.setId(cursor.getInt(0));
+            contato.setNome(cursor.getString(1));
+            contato.setFone(cursor.getString(2));
+            contato.setEmail(cursor.getString(3));
+            contato.setFavorito(new Boolean(cursor.getInt(4) == 0 ? Boolean.FALSE : Boolean.TRUE));
+            contato.setFone2(cursor.getString(5));
+            contatos.add(contato);
+
+
+        }
+        cursor.close();
+
+
+        database.close();
+        return contatos;
+
+    }
+
     public List<Contato> buscaContato(String nome) {
         database = dbHelper.getReadableDatabase();
         List<Contato> contatos = new ArrayList<>();
 
         Cursor cursor;
 
-        String[] cols = new String[]{SQLiteHelper.KEY_ID, SQLiteHelper.KEY_NAME, SQLiteHelper.KEY_FONE, SQLiteHelper.KEY_EMAIL, SQLiteHelper.KEY_FAVORITO};
         String where = SQLiteHelper.KEY_NAME + " like ?";
         String[] argWhere = new String[]{nome + "%"};
 
 
-        cursor = database.query(SQLiteHelper.DATABASE_TABLE, cols, where, argWhere,
+        cursor = database.query(SQLiteHelper.DATABASE_TABLE, PROJECTION, where, argWhere,
                 null, null, SQLiteHelper.KEY_NAME);
 
 
@@ -71,6 +100,7 @@ public class ContatoDAO {
             contato.setFone(cursor.getString(2));
             contato.setEmail(cursor.getString(3));
             contato.setFavorito(new Boolean(cursor.getInt(4) == 0 ? Boolean.FALSE : Boolean.TRUE));
+            contato.setFone2(cursor.getString(5));
             contatos.add(contato);
 
 
@@ -86,6 +116,7 @@ public class ContatoDAO {
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.KEY_NAME, c.getNome());
         values.put(SQLiteHelper.KEY_FONE, c.getFone());
+        values.put(SQLiteHelper.KEY_FONE_2, c.getFone2());
         values.put(SQLiteHelper.KEY_EMAIL, c.getEmail());
         values.put(SQLiteHelper.KEY_FAVORITO, c.isFavorito());
 

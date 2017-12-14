@@ -146,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.favoritos:
                 mostrarSomenteFavoritos();
                 return true;
+            case R.id.todos:
+                updateUI(null);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

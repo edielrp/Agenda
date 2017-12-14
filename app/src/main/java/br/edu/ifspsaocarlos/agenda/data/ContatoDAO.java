@@ -13,7 +13,7 @@ import br.edu.ifspsaocarlos.agenda.model.Contato;
 
 
 public class ContatoDAO {
-    private static final String[] PROJECTION = new String[]{SQLiteHelper.KEY_ID, SQLiteHelper.KEY_NAME, SQLiteHelper.KEY_FONE, SQLiteHelper.KEY_EMAIL, SQLiteHelper.KEY_FAVORITO, SQLiteHelper.KEY_FONE_2};
+    private static final String[] PROJECTION = new String[]{SQLiteHelper.KEY_ID, SQLiteHelper.KEY_NAME, SQLiteHelper.KEY_FONE, SQLiteHelper.KEY_EMAIL, SQLiteHelper.KEY_FAVORITO, SQLiteHelper.KEY_FONE_2, SQLiteHelper.KEY_DATA_ANIVERSARIO};
 
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
@@ -39,6 +39,7 @@ public class ContatoDAO {
             contato.setEmail(cursor.getString(3));
             contato.setFavorito(new Boolean(cursor.getInt(4) == 0 ? Boolean.FALSE : Boolean.TRUE));
             contato.setFone2(cursor.getString(5));
+            contato.setDataAniversario(cursor.getString(6));
             contatos.add(contato);
 
 
@@ -67,6 +68,7 @@ public class ContatoDAO {
             contato.setEmail(cursor.getString(3));
             contato.setFavorito(new Boolean(cursor.getInt(4) == 0 ? Boolean.FALSE : Boolean.TRUE));
             contato.setFone2(cursor.getString(5));
+            contato.setDataAniversario(cursor.getString(6));
             contatos.add(contato);
 
 
@@ -85,8 +87,8 @@ public class ContatoDAO {
 
         Cursor cursor;
 
-        String where = SQLiteHelper.KEY_NAME + " like ?";
-        String[] argWhere = new String[]{nome + "%"};
+        String where = SQLiteHelper.KEY_NAME + " like ? or " + SQLiteHelper.KEY_EMAIL + " like ?";
+        String[] argWhere = new String[]{nome + "%", nome + "%"};
 
 
         cursor = database.query(SQLiteHelper.DATABASE_TABLE, PROJECTION, where, argWhere,
@@ -101,6 +103,7 @@ public class ContatoDAO {
             contato.setEmail(cursor.getString(3));
             contato.setFavorito(new Boolean(cursor.getInt(4) == 0 ? Boolean.FALSE : Boolean.TRUE));
             contato.setFone2(cursor.getString(5));
+            contato.setDataAniversario(cursor.getString(6));
             contatos.add(contato);
 
 
@@ -119,6 +122,7 @@ public class ContatoDAO {
         values.put(SQLiteHelper.KEY_FONE_2, c.getFone2());
         values.put(SQLiteHelper.KEY_EMAIL, c.getEmail());
         values.put(SQLiteHelper.KEY_FAVORITO, c.isFavorito());
+        values.put(SQLiteHelper.KEY_DATA_ANIVERSARIO, c.getDataAniversario());
 
         if (c.getId() > 0)
             database.update(SQLiteHelper.DATABASE_TABLE, values, SQLiteHelper.KEY_ID + "="

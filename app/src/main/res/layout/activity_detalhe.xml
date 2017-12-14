@@ -71,6 +71,18 @@
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></EditText>
+
+        <TextView
+            android:id="@+id/textViewDataAniversario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/data_aniversario"></TextView>
+
+        <EditText
+            android:id="@+id/editTextDataAniversario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Dia/Mês" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 

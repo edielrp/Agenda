@@ -14,6 +14,8 @@
     <string name="contato_alterado">Informações do contato alteradas</string>
     <string name="contato_apagado">Contato removido</string>
     <string name="fone_2">Fone 2</string>
+    <string name="data_aniversario">Data Aniversário</string>
+    <string name="data_invalida">Data inválida!</string>
 </resources>
 
 

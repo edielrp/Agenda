@@ -10,9 +10,18 @@ public class Contato implements Serializable {
     private String fone2;
     private String email;
     private Boolean favorito;
+    private String dataAniversario;
 
     public Contato() {
         this.favorito = Boolean.FALSE;
+    }
+
+    public String getDataAniversario() {
+        return dataAniversario;
+    }
+
+    public void setDataAniversario(String dataAniversario) {
+        this.dataAniversario = dataAniversario;
     }
 
     public String getFone2() {

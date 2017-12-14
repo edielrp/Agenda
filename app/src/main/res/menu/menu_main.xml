@@ -12,5 +12,10 @@
         android:title="Favoritos"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/todos"
+        android:title="Todos"
+        app:showAsAction="never" />
+
 </menu>
 

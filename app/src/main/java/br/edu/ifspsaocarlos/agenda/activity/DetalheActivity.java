@@ -2,6 +2,8 @@ package br.edu.ifspsaocarlos.agenda.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -35,6 +37,8 @@ public class DetalheActivity extends AppCompatActivity {
             fone2Text.setText(c.getFone2());
             EditText emailText = (EditText) findViewById(R.id.editTextEmail);
             emailText.setText(c.getEmail());
+            EditText dataAniversario = (EditText) findViewById(R.id.editTextDataAniversario);
+            dataAniversario.setText(c.getDataAniversario());
             int pos = c.getNome().indexOf(" ");
             if (pos == -1)
                 pos = c.getNome().length();
@@ -76,24 +80,74 @@ public class DetalheActivity extends AppCompatActivity {
     }
 
     private void salvar() {
-        String name = ((EditText) findViewById(R.id.editTextNome)).getText().toString();
-        String fone = ((EditText) findViewById(R.id.editTextFone)).getText().toString();
-        String fone2 = ((EditText) findViewById(R.id.editTextFone2)).getText().toString();
-        String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
 
-        if (c == null)
-            c = new Contato();
+        String dataAniversario =
+                ((EditText) findViewById(R.id.editTextDataAniversario)).getText().toString();
+
+        if (isDataAniversarioValida(dataAniversario)) {
+
+            String name = ((EditText) findViewById(R.id.editTextNome)).getText().toString();
+            String fone = ((EditText) findViewById(R.id.editTextFone)).getText().toString();
+            String fone2 = ((EditText) findViewById(R.id.editTextFone2)).getText().toString();
+            String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+
+            if (c == null)
+                c = new Contato();
+
+            c.setNome(name);
+            c.setFone(fone);
+            c.setFone2(fone2);
+            c.setEmail(email);
+            c.setDataAniversario(dataAniversario);
 
 
-        c.setNome(name);
-        c.setFone(fone);
-        c.setFone2(fone2);
-        c.setEmail(email);
+            cDAO.salvaContato(c);
+            Intent resultIntent = new Intent();
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        } else {
+            showSnackBar(getString(R.string.data_invalida));
+        }
+    }
 
-        cDAO.salvaContato(c);
-        Intent resultIntent = new Intent();
-        setResult(RESULT_OK, resultIntent);
-        finish();
+    private Boolean isDataAniversarioValida(String dataAniversario) {
+        String[] dataAniversarioSplit = dataAniversario.split("/");
+
+        if (dataAniversarioSplit.length != 2) {
+            return Boolean.FALSE;
+        }
+
+        if ((dataAniversarioSplit[0].length() != 2) || (dataAniversarioSplit[1].length() != 2)) {
+            return Boolean.FALSE;
+        }
+
+        Integer day = Integer.parseInt(dataAniversarioSplit[0]);
+        Integer month = Integer.parseInt(dataAniversarioSplit[1]);
+
+        if (isDiaInvalido(day)) {
+            return Boolean.FALSE;
+        }
+
+        if (isMesInvalido(month)) {
+            return Boolean.FALSE;
+        }
+
+        return Boolean.TRUE;
+    }
+
+    private boolean isMesInvalido(Integer mes) {
+        return mes < 1 || mes > 12;
+    }
+
+    private boolean isDiaInvalido(Integer dia) {
+        return dia < 1 || dia > 31;
+    }
+
+    private void showSnackBar(String msg) {
+        CoordinatorLayout coordinatorlayout = (CoordinatorLayout) findViewById(R.id.coordlayoutdetalhe);
+        Snackbar.make(coordinatorlayout, msg,
+                Snackbar.LENGTH_LONG)
+                .show();
     }
 }
 
